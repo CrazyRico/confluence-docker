@@ -1,0 +1,42 @@
+version: '3'
+services:
+  confluence-postgres:
+    container_name: crazyrico-confluence-postgres
+    build:
+      context: ./
+      dockerfile: ./db/Dockerfile
+    environment:
+      POSTGRES_PASSWORD: root
+      TZ: Asia/Shanghai
+    ports:
+    - "54322:5432"
+    expose:
+    - "5432"
+    networks:
+    - confluence-networks
+    volumes:
+    - ./db/data:/var/lib/postgresql/data
+    restart: always
+
+    
+  confluence-app:
+    container_name: crazyrico-confluence-app
+    image: cptactionhank/atlassian-confluence
+    user: root
+    ports:
+    - "8090:8090"
+    expose:
+      - 8090
+      - 8091
+    networks:
+      - confluence-networks
+    volumes:
+      - ./confluence:/var/atlassian/confluence
+    depends_on:
+    - confluence-postgres
+    restart: always
+
+
+networks:
+  confluence-networks:
+    driver: bridge
