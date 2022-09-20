@@ -21,7 +21,9 @@ services:
     
   confluence-app:
     container_name: crazyrico-confluence-app
-    image: cptactionhank/atlassian-confluence
+    build:
+      context: ./
+      dockerfile: ./atlassian/Dockerfile
     user: root
     ports:
     - "8090:8090"
@@ -31,7 +33,8 @@ services:
     networks:
       - confluence-networks
     volumes:
-      - ./confluence:/var/atlassian/confluence
+      - /etc/localtime:/etc/localtime
+      - ./atlassian/confluence:/var/atlassian/confluence
     depends_on:
     - confluence-postgres
     restart: always
